@@ -4,6 +4,7 @@ def adicionar_cliente():
     adicionar_cliente = """
     [nu] Novo usuário
     [lc] Listar contas
+    [del] Deletar Conta
     [q] Sair
     => """
     return input(textwrap.dedent(adicionar_cliente))
@@ -33,8 +34,16 @@ def listar_contas(contas):
         print("=" * 50)
         print(textwrap.dedent(linha))
 
-def main():
+def deletar_conta(contas):
+    numero_conta = int(input("Informe o número da conta que deseja deletar: "))
+    for i, conta in enumerate(contas):
+        if conta['numero_conta'] == numero_conta:
+            del contas[i]
+            print("Conta deletada com sucesso!")
+            return
+    print("Número da conta não encontrado.")
 
+def main():
     usuarios = []
     contas = []
 
@@ -52,6 +61,9 @@ def main():
 
         elif opcao == 'lc':
             listar_contas(contas)
+
+        elif opcao == 'del':
+            deletar_conta(contas)
 
         elif opcao == 'q':
             break
