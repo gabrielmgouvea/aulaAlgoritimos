@@ -17,7 +17,7 @@ def criar_usuario(usuarios):
 
     usuario = {"nome": nome, "email": email, "telefone": telefone, "endereco": endereco}
     usuarios.append(usuario)
-    print("Usuário criado com sucesso!")
+    print(f"Usuário criado com sucesso!  ")
     return usuario
 
 def criar_conta(numero_conta, usuario):
@@ -57,7 +57,7 @@ def main():
 
             if conta:
                 contas.append(conta)
-                print("Conta criada com sucesso!")
+                print(f"Conta criada com sucesso! Conta de número: {numero_conta}")
 
         elif opcao == 'lc':
             listar_contas(contas)
