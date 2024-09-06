@@ -1,5 +1,5 @@
 import textwrap
-
+lista_tarefa = []
 def menu():
     menu = """
     [nt] Nova tarefa
@@ -27,17 +27,20 @@ def visualizar_tarefas(tarefas):
         linha = f"""\
         id: {tarefinha['id']}
         descrição: {tarefinha['tarefa']['descricao']}
-        status:\t{tarefinha['tarefa']['status']}
+        status:\t{tarefinha['tarefa']["status"]}
         prioridade: {tarefinha['tarefa']['prioridade']}
         """
         print("=" * 50)
         print(textwrap.dedent(linha))
 
-def filtrar_tarefas(tarefas, status=None, prioridade=None):
+def filtrar_tarefas(lista_tarefas, status=None, prioridade=None):
+    nova_lista_filtrada = lista_tarefas
     status = input("Qual o status da tarefa? ")
-    prioridade = input("Qual a prioridade da tarefa? ")
-    novo1 = [y for y in tarefas if status in y]
-    print(novo1)
+    if status:
+        nova_lista_filtrada = [lista_tarefas for lista_tarefas in nova_lista_filtrada if lista_tarefas["status"] == status]
+    if status:
+        nova_lista_filtrada = [lista_tarefas for tarefa in nova_lista_filtrada if lista_tarefas["prioridade"] == prioridade]
+    return nova_lista_filtrada
 
 def main():
     nome = []
@@ -62,7 +65,7 @@ def main():
         elif opcao == 'vt':
             visualizar_tarefas(tarefas)
         elif opcao == 'ft':
-            filtrar_tarefas(tarefas)
+            filtrar_tarefas(lista_tarefas)
 
         elif opcao == 'q':
             break
