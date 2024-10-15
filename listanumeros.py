@@ -1,24 +1,24 @@
 import random
 import time
 
-def bubble_sort(arr):
-    n = len(arr)
+def bubble_sort(lista):
+    n = len(lista)
     for i in range(n):
-        for j in range(0, n-i-1):
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
+        for j in range(i):
+            if lista[j] > lista[j+1]:
+             (lista[j], lista[j+1]) = (lista[j+1], lista[j])
 
-def selection_sort(arr):
-    n = len(arr)
+def selection_sort(lista):
+    n = len(lista)
     for i in range(n):
         min_idx = i
         for j in range(i+1, n):
-            if arr[j] < arr[min_idx]:
+            if lista[j] < lista[min_idx]:
                 min_idx = j
-        arr[i], arr[min_idx] = arr[min_idx], arr[i]
+        lista[i], lista[min_idx] = lista[min_idx], lista[i]
 
 n = 10000
-random_list_bubble = [random.randint(0, 1000000) for _ in range(n)]
+random_list_bubble = [random.randint(0, 100) for i in range(n)]
 random_list_selection = random_list_bubble.copy()
 
 start_time = time.time()
