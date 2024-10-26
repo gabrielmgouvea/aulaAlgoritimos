@@ -1,7 +1,5 @@
 import textwrap
 
-lista_tarefas = []
-
 def menu():
     menu = """
     Sistema de Votação
@@ -13,7 +11,6 @@ def menu():
     return input(textwrap.dedent(menu))
 
 def main():
-    tarefas = []
     voto1 = 0
     voto2 = 0
     voto3 = 0
