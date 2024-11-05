@@ -1,61 +1,71 @@
 alunos_registrados = []
 
 def menu():
-    menu = """
+    menu_texto = """
     [1] Cadastrar Alunos
     [2] Registrar Notas
     [3] Média da turma
     [4] Sair
 
     => """
-    return input((menu))
+    return input(menu_texto)
 
-def cadastar_alunos():
-    nome = input(str("Qual o nome do aluno? "))
-    
-    alunos = {"nome": nome}
-    alunos_registrados.append(alunos)
+def cadastrar_alunos():
+    nome = input("Qual o nome do aluno? ")
+    aluno = {"nome": nome, "notas": []}
+    alunos_registrados.append(aluno)
     print("Aluno cadastrado no Sistema!")
-    return alunos
 
-def registrar_notas(lista, chave):
-    pos_ini = 0
-    pos_fim = len(lista) - 1
+def registrar_notas():
+    if not alunos_registrados:
+        print("Nenhum aluno cadastrado ainda.")
+        return
 
-    while pos_ini <= pos_fim:
-        pos_meio = (pos_ini + pos_fim) // 2
+    nome = input("Qual o nome do aluno? ")
+    for aluno in alunos_registrados:
+        if aluno["nome"] == nome:
+            try:
+                nota = float(input("Digite a nota: "))
+                aluno["notas"].append(nota)
+                print("Nota registrada com sucesso!")
+                return
+            except ValueError:
+                print("Nota inválida. Digite um número.")
+                return
+    print("Aluno não encontrado.")
 
-        if lista[pos_meio] == chave:
-            return pos_meio
-        if lista[pos_meio] > chave:
-            pos_fim = pos_meio - 1
-        else:
-            pos_ini = pos_meio + 1
-    return -1
+def media_turma():
+    if not alunos_registrados:
+        print("Nenhum aluno cadastrado ainda.")
+        return
 
-chave = input("Qual o nome do aluno?")
-lista = alunos_registrados
+    total_notas = 0
+    quantidade_notas = 0
 
-pos = registrar_notas(lista, chave)
-if pos != -1:
-    print("Posição da chave", chave, "na lista:", pos)
-else:
-    print("A chave", chave, "não se encontra na lista")
+    for aluno in alunos_registrados:
+        total_notas += sum(aluno["notas"])
+        quantidade_notas += len(aluno["notas"])
+
+    if quantidade_notas == 0:
+        print("Nenhuma nota registrada ainda.")
+    else:
+        media = total_notas / quantidade_notas
+        print(f"Média da turma: {media:.2f}")
 
 def main():
     while True:
         opcao = menu()
 
         if opcao == "1":
-            cadastar_alunos()
+            cadastrar_alunos()
         elif opcao == "2":
-            registrar_notas(lista, chave)
+            registrar_notas()
         elif opcao == "3":
-            print("a")
+            media_turma()
         elif opcao == "4":
             print("Sistema finalizado.")
             break
         else:
-            print("Operação invalida")
+            print("Operação inválida.")
 
 main()
