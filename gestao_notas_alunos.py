@@ -2,15 +2,15 @@ alunos_registrados = []
 
 def menu():
     menu_texto = """
-    [1] Cadastrar Alunos
+    [1] Adicionar Alunos
     [2] Registrar Notas
     [3] Média da turma
     [4] Sair
-
+    
     => """
     return input(menu_texto)
 
-def cadastrar_alunos():
+def adicionar_aluno():
     nome = input("Qual o nome do aluno? ")
     aluno = {"nome": nome, "notas": []}
     alunos_registrados.append(aluno)
@@ -25,14 +25,18 @@ def registrar_notas():
     for aluno in alunos_registrados:
         if aluno["nome"] == nome:
             try:
-                nota = float(input("Digite a nota: "))
-                aluno["notas"].append(nota)
-                print("Nota registrada com sucesso!")
-                return
+                nota = float(input("Digite a nota: "))            
+                if nota <= 10:             
+                    aluno["notas"].append(nota)
+                    print("Nota registrada com sucesso!")
+                    return
+                else:
+                    print("Erro. Nota superior ao permitido.")
+                    return
             except ValueError:
                 print("Nota inválida. Digite um número.")
                 return
-    print("Aluno não encontrado.")
+        print("Aluno não encontrado.")
 
 def media_turma():
     if not alunos_registrados:
@@ -57,7 +61,7 @@ def main():
         opcao = menu()
 
         if opcao == "1":
-            cadastrar_alunos()
+            adicionar_aluno()
         elif opcao == "2":
             registrar_notas()
         elif opcao == "3":
