@@ -1,6 +1,5 @@
 import os
 
-# Função para adicionar um aluno
 def adicionar_aluno(alunos):
     nome = input("Nome do aluno: ")
     notas = []
@@ -13,7 +12,6 @@ def adicionar_aluno(alunos):
         except ValueError:
             print("Entrada inválida. Certifique-se de inserir números válidos.")
     
-    # Verificar se todas as notas estão entre 0 e 10
     for i in range(len(notas)):
         while notas[i] < 0 or notas[i] > 10:
             try:
@@ -25,20 +23,17 @@ def adicionar_aluno(alunos):
     aluno = {"nome": nome, "notas": notas, "media": media}
     alunos.append(aluno)
 
-# Função para ordenar alunos por média usando Insertion Sort
 def ordenar_alunos(alunos):
     for i in range(1, len(alunos)):
         chave = alunos[i]
         j = i - 1
 
-        # Ordenação em ordem decrescente de média
         while j >= 0 and chave['media'] > alunos[j]['media']:
             alunos[j + 1] = alunos[j]
             j -= 1
 
         alunos[j + 1] = chave
 
-# Função para salvar os dados em um arquivo
 def salvar_em_arquivo(alunos):
     if os.path.exists("alunos.txt"):
         resposta = input("O arquivo 'alunos.txt' já existe. Deseja sobrescrevê-lo? (s/n): ").lower()
@@ -54,13 +49,11 @@ def salvar_em_arquivo(alunos):
     except Exception as e:
         print(f"Erro ao salvar os dados no arquivo: {e}")
 
-# Função para exibir os alunos ordenados
 def exibir_alunos_ordenados(alunos):
     print("Alunos ordenados por média:")
     for aluno in alunos:
         print(f"{aluno['nome']} - Média: {aluno['media']:.2f}")
 
-# Função principal
 def main():
     alunos = []
     
@@ -70,10 +63,9 @@ def main():
         if continuar != "s":
             break
     
-    ordenar_alunos(alunos)  # Ordenação usando Insertion Sort
+    ordenar_alunos(alunos)
     exibir_alunos_ordenados(alunos)
     salvar_em_arquivo(alunos)
 
-# Execução do programa
 if __name__ == "__main__":
     main()
