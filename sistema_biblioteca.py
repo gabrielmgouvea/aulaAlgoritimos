@@ -3,7 +3,7 @@ import os
 def adicionar_livro(livros):
     titulo = input("Título do livro: ")
     autor = input("Autor: ")
-    
+
     while True:
         try:
             ano = int(input("Ano de publicação: "))
@@ -36,6 +36,19 @@ def listar_livros(livros):
         for livro in livros:
             print(f"Título: {livro['titulo']}, Autor: {livro['autor']}, Ano: {livro['ano']}, Páginas: {livro['paginas']}")
 
+def insertion_sort(livros, criterio, ordem_crescente=True):
+    for i in range(1, len(livros)):
+        chave = livros[i]
+        j = i - 1
+
+        while j >= 0 and (
+            (chave[criterio] < livros[j][criterio] if ordem_crescente else chave[criterio] > livros[j][criterio])
+        ):
+            livros[j + 1] = livros[j]
+            j -= 1
+
+        livros[j + 1] = chave
+
 def ordenar_livros(livros):
     if not livros:
         print("Nenhum livro registrado.")
@@ -60,13 +73,14 @@ def ordenar_livros(livros):
     ordem = input("Escolha uma opção: ")
 
     if ordem == "1":
-        livros.sort(key=lambda x: x[criterio])
+        ordem_crescente = True
     elif ordem == "2":
-        livros.sort(key=lambda x: x[criterio], reverse=True)
+        ordem_crescente = False
     else:
         print("Opção inválida.")
         return
-    
+
+    insertion_sort(livros, criterio, ordem_crescente)
     print(f"Livros ordenados por {criterio}.")
 
 def salvar_livros(livros):
@@ -106,12 +120,12 @@ def main():
 
     while True:
         print("\nEscolha uma opção:")
-        print("[1] Adicionar livro")
-        print("[2] Listar livros")
-        print("[3] Ordenar livros")
-        print("[4] Salvar dados em arquivo")
-        print("[5] Carregar dados do arquivo")
-        print("[6] Sair")
+        print("1. Adicionar livro")
+        print("2. Listar livros")
+        print("3. Ordenar livros")
+        print("4. Salvar dados em arquivo")
+        print("5. Carregar dados do arquivo")
+        print("6. Sair")
         
         opcao = input("> ")
 
