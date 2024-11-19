@@ -1,142 +1,107 @@
 import os
 
-def adicionar_produto(produtos):
-    nome = input("Nome do produto: ")
-    categoria = input("Categoria: ")
-    
-    while True:
-        try:
-            preco = float(input("Preço: "))
-            if preco > 0:
-                break
-            else:
-                print("O preço deve ser um número positivo.")
-        except ValueError:
-            print("Preço inválido. Por favor, insira um número válido.")
+estoque = []
 
-    while True:
-        try:
-            quantidade = int(input("Quantidade: "))
-            if quantidade >= 0:
-                break
-            else:
-                print("A quantidade não pode ser negativa.")
-        except ValueError:
-            print("Quantidade inválida. Por favor, insira um número inteiro.")
+def adicionar_produto():
+    try:
+        nome = input("Nome do produto: ")
+        categoria = input("Categoria: ")
+        preco = float(input("Preço: "))
+        if preco <= 0:
+            raise ValueError("O preço deve ser positivo.")
+        quantidade = int(input("Quantidade: "))
+        if quantidade < 0:
+            raise ValueError("A quantidade deve ser um número inteiro não negativo.")
+        produto = {"nome": nome, "categoria": categoria, "preco": preco, "quantidade": quantidade}
+        estoque.append(produto)
+        print("Produto adicionado com sucesso!")
+    except ValueError as e:
+        print(f"Erro: {e}")
 
-    produto = {"nome": nome, "categoria": categoria, "preco": preco, "quantidade": quantidade}
-    produtos.append(produto)
-    salvar_estoque(produtos)
-    print("Produto adicionado com sucesso!")
-
-def atualizar_quantidade(produtos):
-    if not produtos:
-        print("Nenhum produto registrado.")
-        return
-
-    nome_produto = input("Digite o nome do produto que deseja atualizar a quantidade: ")
-    produto_encontrado = None
-    
-    for produto in produtos:
-        if produto["nome"].lower() == nome_produto.lower():
-            produto_encontrado = produto
-            break
-    
-    if produto_encontrado:
-        while True:
+def atualizar_quantidade():
+    nome = input("Digite o nome do produto que deseja atualizar: ")
+    for produto in estoque:
+        if produto["nome"].lower() == nome.lower():
             try:
-                quantidade_atualizada = int(input("Digite a nova quantidade (positiva para aumentar, negativa para reduzir): "))
-                produto_encontrado["quantidade"] += quantidade_atualizada
-                if produto_encontrado["quantidade"] < 0:
-                    print("A quantidade não pode ser negativa!")
-                    produto_encontrado["quantidade"] -= quantidade_atualizada
-                else:
-                    break
-            except ValueError:
-                print("Quantidade inválida. Por favor, insira um número inteiro.")
-        
-        salvar_estoque(produtos)
-        print(f"Quantidade de {nome_produto} atualizada com sucesso!")
-    else:
-        print(f"Produto {nome_produto} não encontrado.")
+                nova_quantidade = int(input("Nova quantidade (use valores negativos para reduzir): "))
+                if produto["quantidade"] + nova_quantidade < 0:
+                    raise ValueError("A quantidade final não pode ser negativa.")
+                produto["quantidade"] += nova_quantidade
+                print("Quantidade atualizada com sucesso!")
+                return
+            except ValueError as e:
+                print(f"Erro: {e}")
+                return
+    print("Produto não encontrado.")
 
-def listar_produtos(produtos):
-    if not produtos:
-        print("Nenhum produto registrado.")
-    else:
-        print("\nProdutos cadastrados:")
-        for produto in produtos:
-            print(f"Nome: {produto['nome']}, Categoria: {produto['categoria']}, Preço: R${produto['preco']:.2f}, Quantidade: {produto['quantidade']}")
-
-def ordenar_produtos(produtos):
-    if not produtos:
-        print("Nenhum produto registrado.")
+def listar_produtos():
+    if not estoque:
+        print("Nenhum produto cadastrado.")
         return
+    print("\nProdutos no estoque:")
+    for produto in estoque:
+        print(f"{produto['nome']} - {produto['categoria']} - R$ {produto['preco']:.2f} - {produto['quantidade']} unidades")
+    print()
 
-    print("\nEscolha a opção de ordenação:")
+def insertion_sort(lista, chave, ordem_crescente=True):
+    for i in range(1, len(lista)):
+        atual = lista[i]
+        j = i - 1
+        while j >= 0 and (
+            (lista[j][chave] > atual[chave] if ordem_crescente else lista[j][chave] < atual[chave])
+        ):
+            lista[j + 1] = lista[j]
+            j -= 1
+        lista[j + 1] = atual
+
+def ordenar_produtos():
+    if not estoque:
+        print("Nenhum produto cadastrado.")
+        return
+    print("\nEscolha uma opção para ordenar:")
     print("[1] Ordenar por preço")
     print("[2] Ordenar por quantidade")
-    opcao = input("Escolha uma opção: ")
-
-    if opcao == "1":
-        criterio = "preco"
-    elif opcao == "2":
-        criterio = "quantidade"
-    else:
+    opcao = input("> ")
+    if opcao not in ["1", "2"]:
         print("Opção inválida.")
         return
+    chave = "preco" if opcao == "1" else "quantidade"
+    ordem = input("Ordenar em ordem crescente? (S/N): ").lower()
+    ordem_crescente = ordem == "s"
+    insertion_sort(estoque, chave, ordem_crescente)
+    print(f"Produtos ordenados por {chave} com sucesso!")
 
-    print("\nEscolha a ordem:")
-    print("[1] Crescente")
-    print("[2] Decrescente")
-    ordem = input("Escolha uma opção: ")
-
-    if ordem == "1":
-        produtos.sort(key=lambda x: x[criterio])
-    elif ordem == "2":
-        produtos.sort(key=lambda x: x[criterio], reverse=True)
-    else:
-        print("Opção inválida.")
-        return
-    
-    print(f"Produtos ordenados por {criterio}.")
-    salvar_estoque(produtos)
-
-def salvar_estoque(produtos):
+def salvar_estoque():
     try:
         with open("estoque.txt", "w") as arquivo:
-            for produto in produtos:
-                arquivo.write(f"{produto['nome']},{produto['categoria']},{produto['preco']},{produto['quantidade']}\n")
-        print("Os dados foram salvos no arquivo 'estoque.txt'.")
+            for produto in estoque:
+                linha = f"{produto['nome']},{produto['categoria']},{produto['preco']:.2f},{produto['quantidade']}\n"
+                arquivo.write(linha)
+        print("Dados salvos com sucesso no arquivo 'estoque.txt'.")
     except Exception as e:
-        print(f"Erro ao salvar os dados no arquivo: {e}")
+        print(f"Erro ao salvar os dados: {e}")
 
 def carregar_estoque():
-    produtos = []
-    if os.path.exists("estoque.txt"):
-        try:
-            with open("estoque.txt", "r") as arquivo:
-                for linha in arquivo:
-                    dados = linha.strip().split(",")
-                    if len(dados) == 4:
-                        try:
-                            produto = {
-                                "nome": dados[0],
-                                "categoria": dados[1],
-                                "preco": float(dados[2]),
-                                "quantidade": int(dados[3])
-                            }
-                            produtos.append(produto)
-                        except ValueError:
-                            print(f"Erro ao carregar o produto: {dados[0]} (dados inválidos).")
-        except Exception as e:
-            print(f"Erro ao carregar o arquivo: {e}")
-    return produtos
+    if not os.path.exists("estoque.txt"):
+        print("Arquivo 'estoque.txt' não encontrado.")
+        return
+    try:
+        with open("estoque.txt", "r") as arquivo:
+            for linha in arquivo:
+                nome, categoria, preco, quantidade = linha.strip().split(",")
+                estoque.append({
+                    "nome": nome,
+                    "categoria": categoria,
+                    "preco": float(preco),
+                    "quantidade": int(quantidade)
+                })
+        print("Dados carregados com sucesso do arquivo 'estoque.txt'.")
+    except Exception as e:
+        print(f"Erro ao carregar os dados: {e}")
 
-def main():
-    produtos = carregar_estoque()
-
+def menu():
     while True:
+        print("\nBem-vindo ao Sistema de Gestão de Estoque!")
         print("Escolha uma opção:")
         print("[1] Adicionar produto")
         print("[2] Atualizar quantidade")
@@ -145,26 +110,26 @@ def main():
         print("[5] Salvar dados em arquivo")
         print("[6] Carregar dados do arquivo")
         print("[7] Sair")
-        
         opcao = input("> ")
-
         if opcao == "1":
-            adicionar_produto(produtos)
+            adicionar_produto()
         elif opcao == "2":
-            atualizar_quantidade(produtos)
+            atualizar_quantidade()
         elif opcao == "3":
-            listar_produtos(produtos)
+            listar_produtos()
         elif opcao == "4":
-            ordenar_produtos(produtos)
+            ordenar_produtos()
         elif opcao == "5":
-            salvar_estoque(produtos)
+            salvar_estoque()
         elif opcao == "6":
-            produtos = carregar_estoque()
+            carregar_estoque()
         elif opcao == "7":
-            print("Saindo do programa...")
+            salvar_antes = input("Deseja salvar os dados antes de sair? (S/N): ").lower()
+            if salvar_antes == "s":
+                salvar_estoque()
+            print("Saindo...")
             break
         else:
-            print("Opção inválida. Tente novamente.")
+            print("Opção inválida.")
 
-if __name__ == "__main__":
-    main()
+menu()
